@@ -31,7 +31,7 @@ class MongooseService {
                 const retrySeconds = 5;
                 log(
                     `Conexion MongoDB fallida  (Se intentara de nuevo #${++this
-                        .count} despues de ${retrySeconds} segundos):`,
+                        .count} despues de ${retrySeconds} segundos): `,
                     err
                 );
                 setTimeout(this.connectWithRetry, retrySeconds * 1000);

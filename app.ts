@@ -10,6 +10,7 @@ import * as http from 'http';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
 import cors from 'cors';
+import helmet from 'helmet';
 import { CommonRoutesConfig } from './common/common.routes.config';
 import { AuthRoutes } from './auth/auth.routes.config';
 import { UsersRoutes } from './users/users.routes.config';
@@ -20,6 +21,8 @@ const server: http.Server = http.createServer(app);
 const port = 3000;
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
+
+app.use(helmet());
 
 // here we are adding middleware to parse all incoming requests as JSON 
 app.use(express.json());

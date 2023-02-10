@@ -36,8 +36,10 @@ class UsersMiddleware {
         req: express.Request,
         res: express.Response,
         next: express.NextFunction
-    ){
-        if (res.locals.user._id === req.params.userId) {
+    ) {
+        const user = await userService.getUserByEmail(req.body.email);
+        if (user && user._id === req.params.userId) {
+            res.locals.user = user;
             next();
         } else {
             res.status(400).send({ errors: ['Invalid email'] });

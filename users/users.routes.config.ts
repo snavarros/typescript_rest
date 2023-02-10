@@ -29,7 +29,7 @@ export class UsersRoutes extends CommonRoutesConfig {
                 body('password')
                     .isLength({ min: 5 })
                     .withMessage('Must include password (5+ characters)'),
-                BodyValidationMiddleware.verifyBodyFieldsErrors,
+                UsersMiddleware.validateRequiredUserBodyFields,
                 UsersMiddleware.validateSameEmailDoesntExist,
                 UsersController.createUser
             );
@@ -46,6 +46,7 @@ export class UsersRoutes extends CommonRoutesConfig {
             .delete(UsersController.removeUser);
 
         this.app.put(`/users/:userId`, [
+            jwtMiddleware.validJWTNeeded,
             body('email').isEmail(),
             body('password')
                 .isLength({ min: 5 })
@@ -56,6 +57,7 @@ export class UsersRoutes extends CommonRoutesConfig {
             BodyValidationMiddleware.verifyBodyFieldsErrors,
             UsersMiddleware.validateSameEmailBelongToSameUser,
             UsersMiddleware.userCantChangePermission,
+            permissionMiddleware.onlySameUserOrAdminCanDoThisAction,
             permissionMiddleware.permissionFlagRequired(
                 PermissionFlag.PAID_PERMISSION
             ),
@@ -63,6 +65,7 @@ export class UsersRoutes extends CommonRoutesConfig {
         ]);
 
         this.app.patch(`/users/:userId`, [
+            jwtMiddleware.validJWTNeeded,
             body('email').isEmail().optional(),
             body('password')
                 .isLength({ min: 5 })
@@ -73,7 +76,7 @@ export class UsersRoutes extends CommonRoutesConfig {
             body('permissionFlags').isInt().optional(),
             BodyValidationMiddleware.verifyBodyFieldsErrors,
             UsersMiddleware.validatePatchEmail,
-            UsersMiddleware.userCantChangePermission,
+            permissionMiddleware.onlySameUserOrAdminCanDoThisAction,
             permissionMiddleware.permissionFlagRequired(
                 PermissionFlag.PAID_PERMISSION
             ),
